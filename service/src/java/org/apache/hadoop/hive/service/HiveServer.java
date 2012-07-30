@@ -39,7 +39,6 @@ import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.LogUtils.LogInitializationException;
 import org.apache.hadoop.hive.common.cli.CommonCliOptions;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Schema;
 import org.apache.hadoop.hive.ql.CommandNeedRetryException;
@@ -61,8 +60,6 @@ import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportFactory;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import com.facebook.fb303.fb_status;
 
 /**
@@ -90,7 +87,8 @@ public class HiveServer extends ThriftHive {
    * Handler which implements the Hive Interface This class can be used in lieu
    * of the HiveClient class to get an embedded server.
    */
-  public static class HiveServerHandler extends HiveMetaStore.HMSHandler
+//  public static class HiveServerHandler extends HiveMetaStore.HMSHandler
+  public static class HiveServerHandler extends HCatalogProxyAdapter
       implements HiveInterface {
     /**
      * Hive server uses org.apache.hadoop.hive.ql.Driver for run() and
@@ -228,6 +226,9 @@ public class HiveServer extends ThriftHive {
         session.getTmpOutputFile().delete();
       }
       pipeIn = null;
+
+      // TODO: Ensure all HiveMetaStoreClients are closed.
+      super.cleanup();
     }
 
     /**

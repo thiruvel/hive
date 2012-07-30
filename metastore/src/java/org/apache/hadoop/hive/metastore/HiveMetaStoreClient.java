@@ -157,6 +157,9 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
     open();
   }
 
+  public ThriftHiveMetastore.Iface getLowlevelClient() {
+    return client;
+  }
   /**
    * @param dbname
    * @param tbl_name
